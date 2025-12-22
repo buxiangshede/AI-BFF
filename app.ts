@@ -15,6 +15,7 @@ import {createContainer, Lifetime} from 'awilix';
 import {loadControllers, scopePerRequest} from 'awilix-koa';
 import Koa from 'koa';
 import {configure, getLogger} from 'log4js'
+import historyApiFallback from 'koa2-connect-history-api-fallback';
 import  ErrorHandler from '@middlewares/ErrorHandler';
 import serve from "koa-static";
 
@@ -47,7 +48,8 @@ render(app, {
   cache:  memoryFlag,
   debug:  false
 })
-
+// 出去api以外的路由映射回index.html,让前端路由来处理
+app.use(historyApiFallback({index: '/', whiteList: ['/api']}))
 const logger = getLogger("cheese");
 ErrorHandler.error(app, logger);
 
